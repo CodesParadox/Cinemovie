@@ -1,0 +1,8 @@
+.env
+node_modules
+
+#the files so_far_EN.md EXPLANATION_HE.md and so_far_HE.md are the files that are used to explain the code and the project
+so_far_EN.md
+EXPLANATION_HE.md
+so_far_HE.md
+
