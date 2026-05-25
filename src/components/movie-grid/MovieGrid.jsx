@@ -1,5 +1,6 @@
-import MovieCard from './MovieCard';
-import MovieCardSkeleton from './MovieCardSkeleton';
+import MovieCard from '../movie-card/MovieCard';
+import MovieCardSkeleton from '../movie-card-skeleton/MovieCardSkeleton';
+import './movie-grid.scss';
 
 const SKELETON_COUNT = 10;
 
@@ -73,7 +74,7 @@ export default function MovieGrid({ movies, loading, error, isWatchlist = false,
   return (
     <div className="movie-grid">
       {movies.map(movie => (
-        <MovieCard key={movie.imdbID} movie={movie} />
+        <MovieCard key={movie.id} movie={movie} />
       ))}
     </div>
   );

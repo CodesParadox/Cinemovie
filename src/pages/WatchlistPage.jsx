@@ -1,5 +1,5 @@
 import { useWatchlist } from '../context/WatchlistContext';
-import MovieGrid from '../components/MovieGrid';
+import MovieGrid from '../components/movie-grid/MovieGrid';
 
 export default function WatchlistPage() {
   const { watchlist } = useWatchlist();

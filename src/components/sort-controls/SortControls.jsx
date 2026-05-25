@@ -1,3 +1,5 @@
+import './sort-controls.scss';
+
 const SORT_OPTIONS = [
   { value: 'title', label: 'Title A–Z' },
   { value: 'year',  label: 'Year' },

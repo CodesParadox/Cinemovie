@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import './search-bar.scss';
 
 /**
  * Controlled search input with auto-focus on first mount.
@@ -10,7 +11,6 @@ import { useEffect, useRef } from 'react';
 export default function SearchBar({ value, onChange, placeholder = 'Search movies… e.g. "Inception", "Batman"' }) {
   const inputRef = useRef(null);
 
-  // Auto-focus the search input on first render.
   useEffect(() => {
     inputRef.current?.focus();
   }, []);

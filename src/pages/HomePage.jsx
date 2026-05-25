@@ -1,8 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
-import SearchBar from '../components/SearchBar';
-import SortControls from '../components/SortControls';
-import MovieGrid from '../components/MovieGrid';
-import { searchMovies } from '../api/omdb';
+import HeroSlide from '../components/hero-slide/HeroSlide';
+import ErrorBoundary from '../components/error-boundary/ErrorBoundary';
+import SearchBar from '../components/search-bar/SearchBar';
+import SortControls from '../components/sort-controls/SortControls';
+import MovieGrid from '../components/movie-grid/MovieGrid';
+import { searchMovies } from '../api/tmdb';
 import { useDebounce } from '../hooks/useDebounce';
 
 const DEBOUNCE_DELAY = 400;
@@ -13,19 +15,19 @@ function sortMovies(movies, sortBy) {
   switch (sortBy) {
     case 'year':
       return copy.sort((a, b) => {
-        const ya = parseInt(a.Year) || 0;
-        const yb = parseInt(b.Year) || 0;
+        const ya = parseInt(a.release_date) || 0;
+        const yb = parseInt(b.release_date) || 0;
         return yb - ya;
       });
     case 'rating':
       return copy.sort((a, b) => {
-        const ra = parseFloat(a.imdbRating) || 0;
-        const rb = parseFloat(b.imdbRating) || 0;
+        const ra = a.vote_average || 0;
+        const rb = b.vote_average || 0;
         return rb - ra;
       });
     case 'title':
     default:
-      return copy.sort((a, b) => a.Title.localeCompare(b.Title));
+      return copy.sort((a, b) => a.title.localeCompare(b.title));
   }
 }
 
@@ -78,8 +80,11 @@ export default function HomePage() {
   const showSortControls = !loading && !error && movies.length > 1;
 
   return (
-    <main className="page-content">
-      <div className="container">
+    <main className="home-page">
+      <ErrorBoundary label="HeroSlide">
+        <HeroSlide />
+      </ErrorBoundary>
+      <div className="container home-page__content">
         <SearchBar value={query} onChange={setQuery} />
 
         {showSortControls && (

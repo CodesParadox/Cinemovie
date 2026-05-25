@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getMovieDetails } from '../api/omdb';
-import HeroBackdrop from '../components/HeroBackdrop';
-
-const NA = 'N/A';
+import { getMovieDetails, IMG_URL } from '../api/tmdb';
+import HeroBackdrop from '../components/hero-backdrop/HeroBackdrop';
 
 function MetaItem({ label, value }) {
-  if (!value || value === NA) return null;
+  if (!value) return null;
   return (
     <div className="detail-meta-item">
       <span className="detail-meta-item__label">{label}</span>
@@ -15,14 +13,20 @@ function MetaItem({ label, value }) {
   );
 }
 
+const CURRENCY_FMT = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+});
+
 export default function MovieDetailPage() {
-  const { imdbID } = useParams();
+  const { id } = useParams();
   const [movie, setMovie]   = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError]   = useState(null);
 
   useEffect(() => {
-    if (!imdbID) return;
+    if (!id) return;
 
     const controller = new AbortController();
 
@@ -31,7 +35,7 @@ export default function MovieDetailPage() {
       setError(null);
       setMovie(null);
       try {
-        const data = await getMovieDetails(imdbID, controller.signal);
+        const data = await getMovieDetails(id, controller.signal);
         if (!controller.signal.aborted) {
           setMovie(data);
         }
@@ -49,7 +53,7 @@ export default function MovieDetailPage() {
     fetchDetail();
 
     return () => controller.abort();
-  }, [imdbID]);
+  }, [id]);
 
   if (loading) {
     return (
@@ -90,11 +94,31 @@ export default function MovieDetailPage() {
 
   if (!movie) return null;
 
-  const castList = movie.Actors && movie.Actors !== NA
-    ? movie.Actors.split(',').map(a => a.trim()).filter(Boolean)
-    : [];
+  const castList = movie.credits?.cast?.slice(0, 8).map(c => c.name) ?? [];
+  const plot     = movie.overview || 'No plot summary available.';
+  // Prefer the first official YouTube trailer; fall back to any YouTube video typed "Trailer".
+  const trailer  = movie.videos?.results?.find(
+    v => v.type === 'Trailer' && v.site === 'YouTube' && v.official
+  ) || movie.videos?.results?.find(
+    v => v.type === 'Trailer' && v.site === 'YouTube'
+  );
 
-  const plot = movie.Plot && movie.Plot !== NA ? movie.Plot : 'No plot summary available.';
+  const director = movie.credits?.crew?.find(c => c.job === 'Director')?.name;
+  const writers  = movie.credits?.crew
+    ?.filter(c => ['Writer', 'Screenplay', 'Story'].includes(c.job))
+    .map(c => c.name);
+  const writer   = writers && writers.length ? Array.from(new Set(writers)).join(', ') : null;
+  const released = movie.release_date
+    ? new Date(movie.release_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+    : null;
+  const runtime  = movie.runtime ? `${movie.runtime} min` : null;
+  const genre    = movie.genres?.length ? movie.genres.map(g => g.name).join(', ') : null;
+  const language = movie.spoken_languages?.[0]?.english_name
+    || (movie.original_language ? movie.original_language.toUpperCase() : null);
+  const country  = movie.production_countries?.length
+    ? movie.production_countries.map(c => c.name).join(', ')
+    : null;
+  const boxOffice = movie.revenue ? CURRENCY_FMT.format(movie.revenue) : null;
 
   return (
     <div className="page-content">
@@ -106,8 +130,8 @@ export default function MovieDetailPage() {
         <div className="detail-layout">
           {/* Sidebar poster */}
           <aside className="detail-poster">
-            {movie.Poster && movie.Poster !== NA ? (
-              <img src={movie.Poster} alt={`${movie.Title} poster`} />
+            {movie.poster_path ? (
+              <img src={`${IMG_URL}${movie.poster_path}`} alt={`${movie.title} poster`} />
             ) : (
               <div className="detail-poster__fallback" aria-hidden="true">🎞️</div>
             )}
@@ -134,19 +158,39 @@ export default function MovieDetailPage() {
               </section>
             )}
 
+            {/* Trailer (sits between Cast and Details when one is available) */}
+            {trailer && (
+              <section aria-labelledby="trailer-heading">
+                <h2 className="detail-section-title" id="trailer-heading">Trailer</h2>
+                <iframe
+                  src={`https://www.youtube.com/embed/${trailer.key}`}
+                  title={`${movie.title} — Official Trailer`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  loading="lazy"
+                  style={{
+                    width: '100%',
+                    aspectRatio: '16 / 9',
+                    border: 'none',
+                    borderRadius: '8px',
+                    boxShadow: 'var(--shadow-card)',
+                  }}
+                />
+              </section>
+            )}
+
             {/* Extra metadata */}
             <section aria-labelledby="details-heading">
               <h2 className="detail-section-title" id="details-heading">Details</h2>
               <div className="detail-meta-grid">
-                <MetaItem label="Director"  value={movie.Director} />
-                <MetaItem label="Writer"    value={movie.Writer} />
-                <MetaItem label="Released"  value={movie.Released} />
-                <MetaItem label="Runtime"   value={movie.Runtime} />
-                <MetaItem label="Genre"     value={movie.Genre} />
-                <MetaItem label="Language"  value={movie.Language} />
-                <MetaItem label="Country"   value={movie.Country} />
-                <MetaItem label="Box Office" value={movie.BoxOffice} />
-                <MetaItem label="Awards"    value={movie.Awards} />
+                <MetaItem label="Director"  value={director} />
+                <MetaItem label="Writer"    value={writer} />
+                <MetaItem label="Released"  value={released} />
+                <MetaItem label="Runtime"   value={runtime} />
+                <MetaItem label="Genre"     value={genre} />
+                <MetaItem label="Language"  value={language} />
+                <MetaItem label="Country"   value={country} />
+                <MetaItem label="Box Office" value={boxOffice} />
               </div>
             </section>
 

@@ -1,0 +1,6 @@
+@use './variables' as *;
+
+// Named breakpoint values, re-exported so component partials can reference
+// them via $bp-mobile / $bp-tablet without re-importing _variables directly.
+$bp-mobile: $mobile-width;
+$bp-tablet: $tablet-width;

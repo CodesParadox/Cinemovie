@@ -1,0 +1,43 @@
+.sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.sort-controls__label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-right: 0.25rem;
+}
+
+.sort-controls__btn {
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.825rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  transition: all 0.15s;
+}
+
+.sort-controls__btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.sort-controls__btn--active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.sort-controls__btn--active:hover {
+  color: #fff;
+  background: var(--accent-hover);
+}

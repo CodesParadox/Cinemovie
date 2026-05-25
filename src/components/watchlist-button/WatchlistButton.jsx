@@ -1,20 +1,21 @@
-import { useWatchlist } from '../context/WatchlistContext';
+import { useWatchlist } from '../../context/WatchlistContext';
+import './watchlist-button.scss';
 
 /**
  * Add-to / Remove-from watchlist button.
  *
- * @param {Object}  movie   - The movie object (needs at least imdbID + display fields).
+ * @param {Object}  movie   - The movie object (needs at least id + display fields).
  * @param {boolean} [large] - Renders a pill-shaped button with text label when true.
  */
 export default function WatchlistButton({ movie, large = false }) {
   const { isInWatchlist, addToWatchlist, removeFromWatchlist } = useWatchlist();
-  const inList = isInWatchlist(movie.imdbID);
+  const inList = isInWatchlist(movie.id);
 
   function handleClick(e) {
     e.preventDefault();
     e.stopPropagation();
     if (inList) {
-      removeFromWatchlist(movie.imdbID);
+      removeFromWatchlist(movie.id);
     } else {
       addToWatchlist(movie);
     }

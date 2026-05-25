@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
-import { useTheme } from '../context/ThemeContext';
-import { useWatchlist } from '../context/WatchlistContext';
+import { useTheme } from '../../context/ThemeContext';
+import { useWatchlist } from '../../context/WatchlistContext';
+import './navbar.scss';
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();

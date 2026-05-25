@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { WatchlistProvider } from './context/WatchlistContext';
 import App from './App';
-import './index.css';
+import './index.scss';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

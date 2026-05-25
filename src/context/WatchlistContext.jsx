@@ -4,32 +4,34 @@ import { useLocalStorage } from '../hooks/useLocalStorage';
 const WatchlistContext = createContext(null);
 
 export function WatchlistProvider({ children }) {
-  const [watchlist, setWatchlist] = useLocalStorage('cinephile_watchlist', []);
+  // Storage key bumped to v2 because the stored shape changed from OMDb (Title/Year/Poster/imdbID)
+  // to TMDB (title/release_date/poster_path/id). Pre-existing v1 entries are intentionally retired.
+  const [watchlist, setWatchlist] = useLocalStorage('cinephile_watchlist_v2', []);
 
   const addToWatchlist = useCallback((movie) => {
     setWatchlist(prev => {
-      if (prev.some(m => m.imdbID === movie.imdbID)) return prev;
+      if (prev.some(m => m.id === movie.id)) return prev;
       // Store only the fields needed to render a MovieCard without re-fetching.
       return [
         ...prev,
         {
-          imdbID: movie.imdbID,
-          Title: movie.Title,
-          Year: movie.Year,
-          Poster: movie.Poster,
-          imdbRating: movie.imdbRating,
-          Type: movie.Type,
+          id: movie.id,
+          title: movie.title,
+          release_date: movie.release_date,
+          poster_path: movie.poster_path,
+          vote_average: movie.vote_average,
+          media_type: 'movie',
         },
       ];
     });
   }, [setWatchlist]);
 
-  const removeFromWatchlist = useCallback((imdbID) => {
-    setWatchlist(prev => prev.filter(m => m.imdbID !== imdbID));
+  const removeFromWatchlist = useCallback((id) => {
+    setWatchlist(prev => prev.filter(m => m.id !== id));
   }, [setWatchlist]);
 
-  const isInWatchlist = useCallback((imdbID) => {
-    return watchlist.some(m => m.imdbID === imdbID);
+  const isInWatchlist = useCallback((id) => {
+    return watchlist.some(m => m.id === id);
   }, [watchlist]);
 
   return (

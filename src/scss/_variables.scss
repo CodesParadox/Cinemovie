@@ -1,0 +1,15 @@
+// Static design tokens shared across component partials.
+// Runtime-switchable values (theme colors etc.) still live in :root / [data-theme]
+// CSS custom properties in index.scss — those drive light/dark mode.
+
+$body-bg:     #0f0f0f;
+$main-color:  #e50914;
+$txt-color:   #ffffff;
+
+$header-height:  70px;
+$border-radius:  10px;
+
+$mobile-width:   768px;
+$tablet-width:   1024px;
+
+$font-family:    'Montserrat', sans-serif;

@@ -1,32 +1,31 @@
 import { Link } from 'react-router-dom';
-import WatchlistButton from './WatchlistButton';
-
-const NO_POSTER = 'N/A';
+import WatchlistButton from '../watchlist-button/WatchlistButton';
+import { IMG_URL } from '../../api/tmdb';
+import './movie-card.scss';
 
 /**
  * A single movie card showing poster, title, year, and rating.
- * Clicking navigates to /movie/:imdbID via React Router Link.
+ * Clicking navigates to /movie/:id via React Router Link.
  *
- * @param {Object} movie - OMDb movie object from search results.
+ * @param {Object} movie - TMDB movie object from search results.
  */
 export default function MovieCard({ movie }) {
-  const hasPoster = movie.Poster && movie.Poster !== NO_POSTER;
-  const rating    = movie.imdbRating && movie.imdbRating !== NO_POSTER
-    ? movie.imdbRating
-    : null;
+  const hasPoster = !!movie.poster_path;
+  const rating    = movie.vote_average ? movie.vote_average.toFixed(1) : null;
+  const year      = movie.release_date ? movie.release_date.slice(0, 4) : '';
 
   return (
     <article className="movie-card">
       <Link
-        to={`/movie/${movie.imdbID}`}
-        aria-label={`View details for ${movie.Title} (${movie.Year})`}
+        to={`/movie/${movie.id}`}
+        aria-label={`View details for ${movie.title}${year ? ` (${year})` : ''}`}
       >
         <div className="movie-card__poster-wrap">
           {hasPoster ? (
             <img
               className="movie-card__poster"
-              src={movie.Poster}
-              alt={`${movie.Title} poster`}
+              src={`${IMG_URL}${movie.poster_path}`}
+              alt={`${movie.title} poster`}
               loading="lazy"
             />
           ) : (
@@ -37,7 +36,7 @@ export default function MovieCard({ movie }) {
           )}
 
           {rating && (
-            <div className="movie-card__rating-badge" aria-label={`IMDb rating: ${rating}`}>
+            <div className="movie-card__rating-badge" aria-label={`TMDB rating: ${rating}`}>
               ⭐ {rating}
             </div>
           )}
@@ -48,8 +47,8 @@ export default function MovieCard({ movie }) {
         </div>
 
         <div className="movie-card__body">
-          <h3 className="movie-card__title">{movie.Title}</h3>
-          <p className="movie-card__year">{movie.Year}</p>
+          <h3 className="movie-card__title">{movie.title}</h3>
+          <p className="movie-card__year">{year}</p>
         </div>
       </Link>
     </article>

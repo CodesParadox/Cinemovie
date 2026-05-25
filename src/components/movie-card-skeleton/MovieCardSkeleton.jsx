@@ -1,3 +1,5 @@
+import './movie-card-skeleton.scss';
+
 /**
  * Shimmer placeholder card matching the dimensions of MovieCard.
  * Rendered in a grid while search results are loading.

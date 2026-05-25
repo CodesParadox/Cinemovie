@@ -1,0 +1,120 @@
+@use '../../scss' as *;
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: $header-height;
+  background: var(--navbar-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-subtle);
+  font-family: $font-family;
+  transition: height 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  @include flex(center, flex-start);
+
+  &.shrink {
+    height: 50px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  }
+}
+
+.header__inner {
+  @include flex(center, space-between);
+  gap: 1rem;
+  width: 100%;
+  height: 100%;
+}
+
+.header__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+
+  @include mobile {
+    font-size: 1.05rem;
+  }
+}
+
+.header__logo-icon {
+  font-size: 1.45rem;
+  line-height: 1;
+}
+
+.header__logo-text {
+  color: var(--text);
+
+  .header.shrink & {
+    color: var(--accent);
+  }
+}
+
+.header__nav {
+  @include flex(center, flex-end);
+  gap: 0.35rem;
+}
+
+.header__link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color 0.15s, background 0.15s;
+
+  &:hover {
+    color: var(--text);
+    background: var(--surface-hover);
+  }
+
+  &.active {
+    color: var(--accent);
+    background: var(--surface-hover);
+  }
+
+  @include mobile {
+    padding: 0.35rem 0.55rem;
+    font-size: 0.8rem;
+  }
+}
+
+.header__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.header__theme-btn {
+  @include flex(center, center);
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  transition: color 0.15s, background 0.15s, transform 0.2s;
+
+  &:hover {
+    color: var(--text);
+    background: var(--surface-hover);
+    transform: rotate(-12deg);
+  }
+}
